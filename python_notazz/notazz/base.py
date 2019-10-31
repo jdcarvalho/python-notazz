@@ -9,7 +9,7 @@ class NotazzBase(object):
 
     api_key = None
 
-    PRD_URI = 'https://app.notazz.com/api/{0}'
+    PRD_URI = 'https://app.notazz.com/api/'
 
     @property
     def base_uri(self):
@@ -33,20 +33,24 @@ class NotazzBase(object):
         :param response:
         :return:
         """
-        if response.status_code == 400:
+        if response.status_code:
             r = response.json()
-            if 'errors' in r:
-                for e in r['errors']:
+            if 'codigoProcessamento' in r:
+                code = r.get('codigoProcessamento')
+                if str(code) != '000':
+                    desc = r.get('motivo')
                     raise NotazzException('{code} - {desc}'.format(
-                        code=e['code'],
-                        desc=e['description'],
+                        code=code,
+                        desc=desc,
                     ))
         elif response.status_code == 401:
             raise NotazzException('Auth Error: 401 - API key missing')
+        elif response.status_code == 403:
+            raise NotazzException('Teje Preso!')
         elif response.status_code == 404:
             raise NotazzException('Programming error: 404 - URI not found')
         elif response.status_code == 500:
-            raise NotazzException('500 -Something wrong with ASAAS Server')
+            raise NotazzException('500 -Something wrong with Notazz Server')
 
     def do_get_request(self, url, params=None):
         headers = {
@@ -55,44 +59,32 @@ class NotazzBase(object):
         }
         params = params if params else {}
         response = requests.get(url, params=params, headers=headers)
-        if response.status_code != 200:
-            self.process_errors(response)
-        else:
-            return response
+        self.process_errors(response)
+        return response
 
     def do_post_request(self, url, params=None):
         headers = {
             'content-type': 'application/json',
-            'access_token': self.api_key,
         }
         params = params if params else {}
         response = requests.post(url, json=params, headers=headers)
-        if response.status_code != 200:
-            self.process_errors(response)
-            return response
-        else:
-            return response
+        self.process_errors(response)
+        return response
 
     def do_put_request(self, url, params=None):
         headers = {
             'content-type': 'application/json',
-            'access_token': self.api_key,
         }
         params = params if params else {}
         response = requests.put(url, json=params, headers=headers)
-        if response.status_code != 200:
-            self.process_errors(response)
-        else:
-            return response
+        self.process_errors(response)
+        return response
 
     def do_delete_request(self, url, params=None):
         headers = {
             'content-type': 'application/json',
-            'access_token': self.api_key,
         }
         params = params if params else {}
         response = requests.delete(url, data=params, headers=headers)
-        if response.status_code != 200:
-            self.process_errors(response)
-        else:
-            return response
+        self.process_errors(response)
+        return response
