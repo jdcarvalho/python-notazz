@@ -1,5 +1,6 @@
 from notazz.base import NotazzBase, NotazzException
 from datetime import datetime
+from notazz.utils.money import MoneyUtils
 
 
 class NFSeWrapper(NotazzBase):
@@ -53,7 +54,7 @@ class NFSeWrapper(NotazzBase):
         """
         name = name.strip()
         try:
-            idoc = [str(s) for s in document.split() if s.isdigit()]
+            idoc = [str(s) for s in document if s.isdigit()]
             document = ''.join(idoc)
         except:
             raise NotazzException('Documento inválido')
@@ -66,7 +67,13 @@ class NFSeWrapper(NotazzBase):
         province = province.strip()
 
         try:
-            izip = [str(s) for s in zip_code.split() if s.isdigit()]
+            doc_base_value = MoneyUtils.decimal_places(doc_base_value)
+            doc_base_value = str(doc_base_value)
+        except:
+            raise NotazzException('Valor da Nota Fiscal inválido')
+
+        try:
+            izip = [str(s) for s in zip_code if s.isdigit()]
             zip_code = ''.join(izip)
         except:
             raise NotazzException('CEP Inválido')
@@ -100,39 +107,36 @@ class NFSeWrapper(NotazzBase):
             })
 
         if ie:
-            iie = [str(s) for s in ie.split() if s.isdigit()]
+            iie = [str(s) for s in ie if s.isdigit()]
             ie = ''.join(iie)
             payload.update({
                 'DESTINATION_IE': ie,
             })
         if im:
-            iim = [str(s) for s in im.split() if s.isdigit()]
+            iim = [str(s) for s in im if s.isdigit()]
             im = ''.join(iim)
             payload.update({
                 'DESTINATION_IM': im,
             })
         if phone:
-            iphone = [str(s) for s in phone.split() if s.isdigit()]
+            iphone = [str(s) for s in phone if s.isdigit()]
             phone = ''.join(iphone)
             payload.update({
                 'DESTINATION_PHONE': phone,
             })
         if email:
-            iemail = [str(s) for s in email.split() if s.isdigit()]
-            email = ''.join(iemail)
+            email = email.strip()
             payload.update({
                 'DESTINATION_EMAIL': email
             })
         if receivers:
             if not isinstance(receivers, list):
                 raise NotazzException('"receivers" precisa ser do tipo lista')
-            resultset = dict()
-
             i = 1
             for r in receivers:
-                resultset[str(i)] = {
-                    'EMAIL': r,
-                }
+                payload.update({
+                    'DESTINATION_EMAIL_SEND[{0}][EMAIL]'.format(i): r,
+                })
                 i = i + 1
         if doc_competence:
             if isinstance(doc_competence, datetime):
@@ -140,7 +144,7 @@ class NFSeWrapper(NotazzBase):
                     'DOCUMENT_COMPETENCE': doc_competence.strftime('%Y-%m-%d')
                 })
         if doc_cnae:
-            i_cnae = [str(s) for s in doc_cnae.split() if s.isdigit()]
+            i_cnae = [str(s) for s in doc_cnae if s.isdigit()]
             doc_cnae = ''.join(i_cnae)
             payload.update({
                 'DOCUMENT_CNAE': doc_cnae,
@@ -172,12 +176,10 @@ class NFSeWrapper(NotazzBase):
             payload.update({
                 'SALE_ID': sale_id,
             })
-        payload.update({
-            'ALIQUOTAS': {
-                'ISS': doc_iss_rate,
-                # TODO: Onde o buraco é mais embaixo
-            }
-        })
+        if doc_iss_rate:
+            payload.update({
+                'ALIQUOTAS[ISS]': str(MoneyUtils.decimal_places(doc_iss_rate)),
+            })
         r = self.do_post_request(NFSeWrapper.PRD_URI, params=payload)
         return r
 

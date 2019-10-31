@@ -1,5 +1,5 @@
 import requests
-
+import json
 
 class NotazzException(Exception):
     pass
@@ -52,39 +52,11 @@ class NotazzBase(object):
         elif response.status_code == 500:
             raise NotazzException('500 -Something wrong with Notazz Server')
 
-    def do_get_request(self, url, params=None):
-        headers = {
-            'content-type': 'application/json',
-            'access_token': self.api_key,
-        }
-        params = params if params else {}
-        response = requests.get(url, params=params, headers=headers)
-        self.process_errors(response)
-        return response
-
     def do_post_request(self, url, params=None):
         headers = {
             'content-type': 'application/json',
         }
-        params = params if params else {}
+        params = json.dumps(params) if params else {}
         response = requests.post(url, json=params, headers=headers)
-        self.process_errors(response)
-        return response
-
-    def do_put_request(self, url, params=None):
-        headers = {
-            'content-type': 'application/json',
-        }
-        params = params if params else {}
-        response = requests.put(url, json=params, headers=headers)
-        self.process_errors(response)
-        return response
-
-    def do_delete_request(self, url, params=None):
-        headers = {
-            'content-type': 'application/json',
-        }
-        params = params if params else {}
-        response = requests.delete(url, data=params, headers=headers)
         self.process_errors(response)
         return response

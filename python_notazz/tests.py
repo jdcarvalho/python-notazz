@@ -24,12 +24,13 @@ class TestAsaasCustomers(TestCase):
             'São Paulo',
             'SP',
             '35.560-000',
-            '00.0000-0000',
+            '11.98833-3322',
             'muneo@maestrus.com',
             ['muneo@maestrus.com', 'joao.carvalho@maestrus.com'],
             200,
             'Pintura de Janelas',
-            5, 'VotemCobram',
+            0,
+            'VotemCobram',
         )
         resposta = r.json()
         self.assertTrue(all(
