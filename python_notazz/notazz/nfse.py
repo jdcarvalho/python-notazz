@@ -12,46 +12,17 @@ class NFSeWrapper(NotazzBase):
     ISS_KIND_RETAINED = '1'
     ISS_KIND_NOT_RETAINED = '0'
 
-    def create_nfse(
-            self, name, document, people_kind, address,
+    def _prepare_payload(
+            self, name, method, document, people_kind, address,
             add_no, add_complement, neighborhood, city,
             province, zip_code, phone, email, receivers,
             doc_base_value, doc_desc, doc_iss_rate,
             external_id, ie='', im='', sale_id=None,
             doc_competence=None, doc_cnae=None,
             doc_lc116=None, doc_iss_kind=None,
-            city_service_code=None, city_service_desc=None
+            city_service_code=None, city_service_desc=None,
+            document_id=None
     ):
-        """
-        This method allows to create a Brazilian NFSe with NOTAZZ APP
-        :param name: Nome do Cliente
-        :param document: Documento do Cliente CPF ou CNPJ
-        :param ie: Inscrição Estadual
-        :param im: Inscrição Municipal
-        :param people_kind: Tipo de Pessoa. (Ver Constantes PEOPLE_KIND)
-        :param address: Endereço
-        :param add_no: Numero do Endereço
-        :param add_complement: Complemento de Endereço
-        :param neighborhood: Bairro
-        :param city: Cidade (Sem abreviações)
-        :param province: Estado
-        :param zip_code: CEP
-        :param phone: Telefone
-        :param email: Email
-        :param receivers: Lista Python de e-mails para a NFSe ser enviada
-        :param doc_base_value: Valor base da Nota Fiscal de Serviço
-        :param doc_desc: Descrição da Nota Fiscal de Serviço
-        :param doc_iss_rate: Percentual de ISS
-        :param external_id: Identificador Externo
-        :param sale_id: Identificador da Venda (Opcional)
-        :param doc_competence: Data da Competência (Opcional)
-        :param doc_cnae: CNAE (Opcional)
-        :param doc_lc116: Código LC116 (Opcional)
-        :param doc_iss_kind: Tipo de ISS (Ver constantes ISS_KIND) Opcional
-        :param city_service_code: Código de serviço do Municipio
-        :param city_service_desc: Descrição de serviço do Municipio
-        :return:
-        """
         name = name.strip()
         try:
             idoc = [str(s) for s in document if s.isdigit()]
@@ -86,7 +57,7 @@ class NFSeWrapper(NotazzBase):
 
         payload = {
             'API_KEY': self.api_key,
-            'METHOD': 'create_nfse',
+            'METHOD': method,
             'DESTINATION_NAME': name,
             'DESTINATION_TAXID': document,
             'DESTINATION_TAXTYPE': people_kind,
@@ -180,14 +151,93 @@ class NFSeWrapper(NotazzBase):
             payload.update({
                 'ALIQUOTAS[ISS]': str(MoneyUtils.decimal_places(doc_iss_rate)),
             })
+        if document_id:
+            payload.update({
+                'DOCUMENT_ID': document_id
+            })
+        return payload
+
+    def create_nfse(
+            self, name, document, people_kind, address,
+            add_no, add_complement, neighborhood, city,
+            province, zip_code, phone, email, receivers,
+            doc_base_value, doc_desc, doc_iss_rate,
+            external_id, ie='', im='', sale_id=None,
+            doc_competence=None, doc_cnae=None,
+            doc_lc116=None, doc_iss_kind=None,
+            city_service_code=None, city_service_desc=None
+    ):
+        """
+        This method allows to create a Brazilian NFSe with NOTAZZ APP
+        :param name: Nome do Cliente
+        :param document: Documento do Cliente CPF ou CNPJ
+        :param ie: Inscrição Estadual
+        :param im: Inscrição Municipal
+        :param people_kind: Tipo de Pessoa. (Ver Constantes PEOPLE_KIND)
+        :param address: Endereço
+        :param add_no: Numero do Endereço
+        :param add_complement: Complemento de Endereço
+        :param neighborhood: Bairro
+        :param city: Cidade (Sem abreviações)
+        :param province: Estado
+        :param zip_code: CEP
+        :param phone: Telefone
+        :param email: Email
+        :param receivers: Lista Python de e-mails para a NFSe ser enviada
+        :param doc_base_value: Valor base da Nota Fiscal de Serviço
+        :param doc_desc: Descrição da Nota Fiscal de Serviço
+        :param doc_iss_rate: Percentual de ISS
+        :param external_id: Identificador Externo
+        :param sale_id: Identificador da Venda (Opcional)
+        :param doc_competence: Data da Competência (Opcional)
+        :param doc_cnae: CNAE (Opcional)
+        :param doc_lc116: Código LC116 (Opcional)
+        :param doc_iss_kind: Tipo de ISS (Ver constantes ISS_KIND) Opcional
+        :param city_service_code: Código de serviço do Municipio
+        :param city_service_desc: Descrição de serviço do Municipio
+        :return:
+        """
+        payload = self._prepare_payload(
+            name, 'create_nfse', document, people_kind,
+            address, add_no, add_complement, neighborhood,
+            city, province, zip_code, phone, email,
+            receivers, doc_base_value, doc_desc, doc_iss_rate,
+            external_id, ie, im, sale_id, doc_competence, doc_cnae,
+            doc_lc116, doc_iss_kind, city_service_code,
+            city_service_desc, document_id=None)
         r = self.do_post_request(NFSeWrapper.PRD_URI, params=payload)
         return r
 
-    def update_nfse(self):
-        pass
+    def update_nfse(
+            self,
+            document_id, name, document, people_kind, address,
+            add_no, add_complement, neighborhood, city,
+            province, zip_code, phone, email, receivers,
+            doc_base_value, doc_desc, doc_iss_rate,
+            external_id, ie='', im='', sale_id=None,
+            doc_competence=None, doc_cnae=None,
+            doc_lc116=None, doc_iss_kind=None,
+            city_service_code=None, city_service_desc=None
+    ):
+        payload = self._prepare_payload(
+            name, 'update_nfse', document, people_kind,
+            address, add_no, add_complement, neighborhood,
+            city, province, zip_code, phone, email,
+            receivers, doc_base_value, doc_desc, doc_iss_rate,
+            external_id, ie, im, sale_id, doc_competence, doc_cnae,
+            doc_lc116, doc_iss_kind, city_service_code,
+            city_service_desc, document_id=document_id)
+        r = self.do_post_request(NFSeWrapper.PRD_URI, params=payload)
+        return r
 
-    def get_by_id(self):
-        pass
+    def get_by_id(self, document_id):
+        payload = {
+            'API_KEY': self.api_key,
+            'METHOD': 'consult_nfse',
+            'DOCUMENT_ID': document_id,
+        }
+        r = self.do_post_request(NFSeWrapper.PRD_URI, params=payload)
+        return r
 
     def query_nfse(self):
         pass
