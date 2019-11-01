@@ -239,17 +239,29 @@ class NFSeWrapper(NotazzBase):
         r = self.do_post_request(NFSeWrapper.PRD_URI, params=payload)
         return r
 
-    def query_nfse(self):
-        pass
+    def delete_nfse(self, document_id):
+        payload = {
+            'API_KEY': self.api_key,
+            'METHOD': 'delete_nfse',
+            'DOCUMENT_ID': document_id,
+        }
+        r = self.do_post_request(NFSeWrapper.PRD_URI, params=payload)
+        return r
 
-    def delete_nfse(self):
-        pass
+    def cancel_nfse(self, document_id):
+        payload = {
+            'API_KEY': self.api_key,
+            'METHOD': 'cancel_nfse',
+            'DOCUMENT_ID': document_id,
+        }
+        r = self.do_post_request(NFSeWrapper.PRD_URI, params=payload)
+        return r
 
-    def cancel_nfse(self):
-        pass
-
-    def unlink(self):
-        pass
-
-    def list_cities(self):
-        pass
+    def unlink(self, document_id):
+        payload = {
+            'API_KEY': self.api_key,
+            'METHOD': 'unlink_nfse_external_id',
+            'DOCUMENT_ID': document_id,
+        }
+        r = self.do_post_request(NFSeWrapper.PRD_URI, params=payload)
+        return r
