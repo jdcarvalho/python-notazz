@@ -43,7 +43,7 @@ class TestNotazz(TestCase):
         import uuid
 
         r = self.notazz.nfse.create_nfse(
-            'Jorge Muneo Nakagawa',
+            'Titio Avô',
             '626.179.730-77',
             NFSeWrapper.PEOPLE_KIND_SINGLE,
             'Rua Maria das Bolas',
@@ -54,17 +54,17 @@ class TestNotazz(TestCase):
             'SP',
             '35.560-000',
             '11.98833-3322',
-            'muneo@maestrus.com',
-            ['muneo@maestrus.com', 'joao.carvalho@maestrus.com'],
+            'titio@avo.com',
+            ['titio@avo.com', 'tigresa@avo.com'],
             1.99,
-            'Serviço de Pintura de Janelas',
+            'Serviço de remoção do Steve Pizza',
             2, uuid.uuid4().hex,
         )
         resposta = r.json()
 
         r1 = self.notazz.nfse.update_nfse(
             resposta.get('id'),
-            'Jorge Muneo Nakagawa',
+            'Buzz Lightyear',
             '626.179.730-77',
             NFSeWrapper.PEOPLE_KIND_SINGLE,
             'Rua Maria das Bolas',
@@ -75,10 +75,10 @@ class TestNotazz(TestCase):
             'SP',
             '35.560-000',
             '11.98833-3322',
-            'muneo@maestrus.com',
-            ['muneo@maestrus.com', 'joao.carvalho@maestrus.com'],
+            'buzz@commando.com',
+            ['buzz@commando.com', 'woody@commando.com'],
             2.99,
-            'Serviço de Pintura de Janelas',
+            'Serviço de Guincho Espacial',
             2, external_id=None,
         )
 
@@ -105,8 +105,8 @@ class TestNotazz(TestCase):
             'SP',
             '35.560-000',
             '11.98833-3322',
-            'muneo@maestrus.com',
-            ['muneo@maestrus.com', 'joao.carvalho@maestrus.com'],
+            'boleta@bola.com',
+            ['boleta@bola.com', 'bonecojosias@boleta.com'],
             1.99,
             'Serviço de Fala Fiote',
             2, uuid.uuid4().hex,
