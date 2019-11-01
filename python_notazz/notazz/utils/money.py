@@ -8,4 +8,3 @@ class MoneyUtils(object):
         places = Decimal(10) ** -places
         value = Decimal(value).quantize(places)
         return value
-
