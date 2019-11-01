@@ -1,6 +1,7 @@
 import requests
 import json
 
+
 class NotazzException(Exception):
     pass
 
@@ -53,10 +54,11 @@ class NotazzBase(object):
             raise NotazzException('500 -Something wrong with Notazz Server')
 
     def do_post_request(self, url, params=None):
-        headers = {
-            'content-type': 'application/json',
+        params = params if params else {}
+        params = {
+            'fields': json.dumps(params)
         }
-        params = json.dumps(params) if params else {}
-        response = requests.post(url, json=params, headers=headers)
+        response = requests.post(url, data=params)
         self.process_errors(response)
         return response
+
