@@ -2,10 +2,15 @@
 
 from setuptools import setup, find_packages
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
     name='python-notazz',
     version='0.1',
     description="Notazz Python Binding",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     classifiers=[
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
@@ -23,6 +28,6 @@ setup(
         "requests>=2.22.0",
         "urllib3>=1.25.6",
     ],
-    url='https://maestrus.com',
+    url='https://github.com/jdcarvalho/python-notazz',
     packages=find_packages(),
 )
