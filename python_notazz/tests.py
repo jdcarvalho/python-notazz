@@ -16,7 +16,7 @@ class TestNotazz(TestCase):
         import uuid
 
         r = self.notazz.nfse.create_nfse(
-            'Jorge Muneo Nakagawa',
+            'Ana Boleta',
             '626.179.730-77',
             NFSeWrapper.PEOPLE_KIND_SINGLE,
             'Rua Maria das Bolas',
@@ -28,7 +28,7 @@ class TestNotazz(TestCase):
             '35.560-000',
             '11.98833-3322',
             'muneo@maestrus.com',
-            ['muneo@maestrus.com', 'joao.carvalho@maestrus.com'],
+            ['falafiote@boleta.com', 'tabaum@boleta.com'],
             1.99,
             'Serviço de Pintura de Janelas',
             2, uuid.uuid4().hex,
@@ -139,8 +139,8 @@ class TestNotazz(TestCase):
             'SP',
             '35.560-000',
             '11.98833-3322',
-            'muneo@maestrus.com',
-            ['muneo@maestrus.com', 'joao.carvalho@maestrus.com'],
+            'boleta@bola.com',
+            ['boleta@bola.com', 'bonecojosias@boleta.com'],
             1.99,
             'Serviço de Fala Fiote',
             2, uuid.uuid4().hex,
