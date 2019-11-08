@@ -104,11 +104,13 @@ class NFSeWrapper(NotazzBase):
             if not isinstance(receivers, list):
                 raise NotazzException('"receivers" precisa ser do tipo lista')
             i = 1
+            result = dict()
             for r in receivers:
-                payload.update({
-                    'DESTINATION_EMAIL_SEND[{0}][EMAIL]'.format(i): r,
-                })
+                result[str(i)] = {'EMAIL': r}
                 i = i + 1
+            payload.update({
+                'DESTINATION_EMAIL_SEND': result,
+            })
         if doc_competence:
             if isinstance(doc_competence, datetime):
                 payload.update({
